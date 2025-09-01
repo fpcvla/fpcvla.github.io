@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<!-- 网页描述和关键词，有助于SEO优化 -->
+<meta name="description"
+  content="FPC-VLA: A Vision-Language-Action Framework with a Supervisor for Failure Prediction and Correction">
+<!-- <meta name="keywords" content="DualVLA, VLA, Spatial Representations, Robotics"> -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FPC-VLA: A Vision-Language-Action Framework with a Supervisor for Failure Prediction and Correction</title>
+
+<style>
+/* 全局重置样式，消除浏览器默认样式差异 */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+/* 页面主体样式设置 */
+body {
+font-family: 'Times New Roman', serif;
+line-height: 1.4;
+color: #333;
+background-color: #fff;
+font-size: 16px;
+}
+
+/* 主容器样式，限制最大宽度并居中 */
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 0 20px;
+}
+
+/* 头部英雄区域样式 */
+.hero {
+padding: 60px 0 40px 0;
+}
+
+/* 主标题样式 */
+.publication-title {
+font-size: 3rem;
+font-weight: 400;
+color: #333;
+margin-bottom: 1rem;
+line-height: 1.1;
+font-family: 'Georgia', serif;
+text-align: center;
+}
+
+/* 副标题样式 */
+.subtitle {
+font-size: 1.5rem;
+color: #666;
+margin-bottom: 2rem;
+font-weight: 300;
+line-height: 1.3;
+font-family: 'Arial', sans-serif;
+text-align: center;
+}
+
+/* 作者信息区域样式 */
+.publication-authors {
+font-size: 1.1rem;
+margin-bottom: 1rem;
+line-height: 1.8;
+font-family: 'Helvetica', sans-serif;
+text-align: center;
+}
+
+/* 单个作者块样式 */
+.author-block {
+display: inline;
+margin-right: 0.5rem;
+}
+
+/* 作者链接样式 */
+.author-block a {
+color: #3273dc;
+text-decoration: none;
+}
+
+.author-block a:hover {
+text-decoration: underline;
+}
+
+/* 上标样式（用于机构标注） */
+sup {
+font-size: 0.8em;
+vertical-align: super;
+}
+
+/* 等贡献说明文字样式 */
+.equal-contribution {
+font-style: italic;
+color: #666;
+margin: 1rem 0 2rem 0;
+font-size: 0.9rem;
+line-height: 1.2;
+text-align: center;
+}
+
+/* 发布链接区域样式 */
+.publication-links {
+margin-top: 2rem;
+display: flex;
+justify-content: center;
+gap: 1rem;
+flex-wrap: wrap;
+}
+
+/* 按钮通用样式 */
+.button {
+display: inline-flex;
+align-items: center;
+padding: 12px 24px;
+background-color: #363636;
+color: white;
+text-decoration: none;
+border-radius: 25px;
+font-weight: 500;
+font-size: 1rem;
+transition: all 0.3s ease;
+border: none;
+cursor: pointer;
+font-family: 'Arial', sans-serif;
+}
+
+/* 按钮悬停效果 */
+.button:hover {
+background-color: #2f2f2f;
+transform: translateY(-1px);
+}
+
+/* 按钮图标样式 */
+.button-icon {
+margin-right: 8px;
+font-size: 1.1em;
+}
+
+/* 视频部分整体样式 */
+.video-section {
+padding: 40px 0 60px 0;
+background-color: #fff;
+}
+
+/* 视频容器样式，使用响应式16:9比例 */
+.video-container {
+max-width: 900px;
+margin: 0 auto;
+position: relative;
+padding-bottom: 56.25%; /* 16:9 宽高比 */
+height: 0;
+overflow: hidden;
+border-radius: 10px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* 视频iframe样式，填满容器 */
+.video-container iframe {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+border: none;
+}
+
+/* 新增：视频网格容器样式 */
+.video-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+margin: 2rem 0;
+max-width: 1000px;
+margin-left: auto;
+margin-right: auto;
+}
+
+/* 新增：网格中单个视频项样式 */
+.video-item {
+background: #fff;
+border-radius: 10px;
+overflow: hidden;
+box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 新增：视频项悬停效果 */
+.video-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* 新增：网格视频容器 */
+.video-item-container {
+position: relative;
+padding-bottom: 56.25%; /* 16:9 宽高比 */
+height: 0;
+overflow: hidden;
+}
+
+/* 新增：网格视频iframe */
+.video-item-container iframe {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+border: none;
+}
+
+/* 新增：视频标题样式 */
+.video-title {
+padding: 1rem;
+font-size: 1rem;
+font-weight: 500;
+color: #333;
+text-align: center;
+background: #f8f9fa;
+font-family: 'Arial', sans-serif;
+}
+
+/* 视频描述文字样式 */
+.video-description {
+text-align: center;
+margin-top: 2rem;
+font-size: 1.1rem;
+color: #666;
+max-width: 800px;
+margin-left: auto;
+margin-right: auto;
+line-height: 1.6;
+}
+
+/* 摘要内容样式 - 紧凑版本 */
+.abstract-content {
+max-width: 900px;
+margin: 2rem auto 0 auto;
+font-size: 1.2rem;
+line-height: 1.6;
+color: #555;
+text-align: justify;
+font-family: 'Times New Roman', serif;
+}
+
+/* 摘要段落间距 */
+.abstract-content p {
+margin-bottom: 1rem;
+}
+
+/* 内容部分通用样式 */
+.content-section {
+padding: 60px 0;
+background-color: #fff;
+}
+
+/* 奇数内容部分使用浅灰背景，创建视觉层次 */
+.content-section:nth-child(odd) {
+background-color: #f8f9fa;
+}
+
+/* 章节标题样式 */
+.section-title {
+font-size: 2rem;
+font-weight: 400;
+color: #333;
+margin-bottom: 2rem;
+text-align: left;
+font-family: 'Georgia', serif;
+}
+
+/* 章节内容样式 */
+.section-content {
+max-width: 1200px;
+margin: 0 auto;
+font-size: 1.2rem;
+line-height: 1.6;
+color: #555;
+text-align: justify;
+font-family: 'Times New Roman', serif;
+}
+
+/* 内容段落间距 */
+.section-content p {
+margin-bottom: 1.2rem;
+}
+
+/* 列表样式 */
+.section-content ul {
+margin: 1.5rem 0;
+padding-left: 2rem;
+}
+
+/* 列表项样式 */
+.section-content li {
+margin-bottom: 0.8rem;
+line-height: 1.6;
+}
+
+/* 加粗文字样式 */
+.section-content strong {
+font-weight: 600;
+color: #333;
+}
+
+/* 图片占位符样式 - 用于展示图片位置 */
+.image-placeholder {
+width: 100%;
+max-width: 800px;
+height: 400px;
+background-color: #f0f0f0;
+border: 2px dashed #ccc;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 2rem auto;
+border-radius: 8px;
+color: #888;
+font-size: 1.1rem;
+font-family: 'Arial', sans-serif;
+}
+
+/* 表格容器样式，支持横向滚动 */
+.table-container {
+margin: 2rem auto;
+max-width: 800px;
+overflow-x: auto;
+}
+
+/* 结果表格样式 */
+.results-table {
+width: 100%;
+border-collapse: collapse;
+background-color: white;
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+border-radius: 8px;
+overflow: hidden;
+}
+
+/* 表格单元格通用样式 */
+.results-table th,
+.results-table td {
+padding: 12px 16px;
+text-align: left;
+border-bottom: 1px solid #eee;
+}
+
+/* 表头样式 */
+.results-table th {
+background-color: #f8f9fa;
+font-weight: 600;
+color: #333;
+font-size: 0.95rem;
+}
+
+/* 表格数据单元格样式 */
+.results-table td {
+font-size: 0.9rem;
+color: #555;
+}
+
+/* 表格行悬停效果 */
+.results-table tr:hover {
+background-color: #f5f5f5;
+}
+
+/* 数字列居中对齐 */
+.results-table .number {
+text-align: center;
+font-weight: 500;
+}
+
+/* 最佳结果高亮样式 */
+.best-result {
+background-color: #e8f5e8;
+font-weight: 600;
+color: #2d5a2d;
+}
+
+/* 移动端响应式样式 */
+@media (max-width: 768px) {
+/* 移动端主标题缩小 */
+.publication-title {
+  font-size: 2rem;
+}
+
+/* 移动端副标题缩小 */
+.subtitle {
+  font-size: 1.2rem;
+}
+
+/* 移动端作者信息调整 */
+.publication-authors {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* 移动端按钮垂直排列 */
+.publication-links {
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 移动端按钮统一宽度 */
+.button {
+  width: 200px;
+  justify-content: center;
+}
+
+/* 移动端头部区域缩小间距 */
+.hero {
+  padding: 40px 0 30px 0;
+}
+
+/* 移动端视频区域缩小间距 */
+.video-section {
+  padding: 30px 0 40px 0;
+}
+
+/* 移动端摘要文字调整 */
+.abstract-content {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* 移动端内容区域缩小间距 */
+.content-section {
+  padding: 40px 0;
+}
+
+/* 移动端章节标题缩小 */
+.section-title {
+  font-size: 1.5rem;
+}
+
+/* 移动端正文内容调整 */
+.section-content {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* 移动端图片占位符缩小 */
+.image-placeholder {
+  height: 250px;
+  font-size: 1rem;
+}
+
+/* 移动端表格字体缩小 */
+.results-table {
+  font-size: 0.85rem;
+}
+
+/* 移动端表格单元格缩小间距 */
+.results-table th,
+.results-table td {
+  padding: 8px 12px;
+}
+
+/* 移动端视频网格调整 */
+.video-grid {
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+/* 移动端视频标题字体调整 */
+.video-title {
+  font-size: 0.9rem;
+  padding: 0.8rem;
+}
+}
+</style>
+</head>
+<body>
+
+<!-- 页面头部英雄区域 -->
+<section class="hero">
+<div class="container">
+<div class="content">
+<!-- 主标题 -->
+<h1 class="publication-title">FPC-VLA</h1>
+<!-- 副标题 -->
+<h2 class="subtitle">
+  A Vision-Language-Action Framework with a Supervisor for Failure Prediction and Correction 
+</h2>
+
+
+
+<!-- 论文相关链接按钮 -->
+<div class="publication-links">
+  <!-- 论文链接 -->
+  <a href="#" class="button">
+    <span class="button-icon">📄</span>
+    <span>Paper</span>
+  </a>
+  <!-- 代码链接 -->
+  <a href="#" class="button">
+    <span class="button-icon">💻</span>
+    <span>Code</span>
+  </a>
+  <!-- 模型链接 -->
+  <a href="#" class="button">
+    <span class="button-icon">🤖</span>
+    <span>Model</span>
+  </a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 视频展示区域 -->
+<section class="video-section">
+<div class="container">
+<!-- 响应式视频容器 -->
+<div class="video-box" style="flex:2; display: flex; justify-content: center; align-items: center;">
+  <video controls autoplay loop style="width:80%; border:none; border-radius:8px;" playbackRate="2">
+    <source src="figs/video_20250825.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<!-- 视频描述文字 -->
+<!-- <div class="video-description">
+  Watch our demonstration of DualVLA in action, showcasing spatial-enhanced visual-language-action capabilities across various robotic tasks.
+</div> -->
+
+<!-- 论文摘要内容 -->
+<div class="abstract-content">
+  <!-- 摘要第一段 - 架构介绍 -->
+  <p>
+    Robotic manipulation is a fundamental component of automation. However, traditional perception-planning pipelines often fall short in open-ended tasks due to limited flexibility, while the architecture of a single end-to-end Vision-Language-Action (VLA) offers promising capabilities but lacks crucial mechanisms for anticipating and recovering from failure. To address these challenges, we propose FPC-VLA, a dual-model framework that integrates VLA with a supervisor for failure prediction and correction. The supervisor evaluates action viability through vision–language queries and generates corrective strategies when risks arise, trained efficiently without manual labeling. A similarity-guided fusion module further refines actions by leveraging past predictions. Evaluation results on multiple simulation platforms (SIMPLER and LIBERO) and robot embodiments (WidowX, Google Robot, Franka) show that FPC-VLA outperforms state-of-the-art models in both zero-shot and fine-tuned settings. By activating the supervisor only at keyframes, our approach significantly increases task success rates with minimal impact on execution time. Successful real-world deployments on diverse, long-horizon tasks confirm FPC-VLA's strong generalization and practical utility for building more reliable autonomous systems.  </p>
+</div>
+</div>
+</section>
+
+<!-- 介绍部分 -->
+<section class="content-section">
+  <div class="container">
+  <h2 class="section-title">Overview</h2>
+  <div class="section-content">
+    <div style="text-align: center;">
+      <img src="figs/in.jpg" alt="Motivation" style="width: 100%; max-width: 800px;">
+    </div>
+    <!-- 模型训练和注意力机制说明 -->
+    <!-- <p>
+      As shown in (a), most existing approaches rely heavily on imitation learning from expert demonstrations, which are typically composed only of successful trajectories. This leads to a fundamental weakness: these models struggle to recover from deviations, often requiring external supervision for potential failure prediction and corrective guidance. Moreover, collecting large-scale datasets that capture both failure prediction and correction is another bottleneck. Most existing datasets usually annotate failures post hoc , and rarely enable early prediction or proactive interventions. The lack of a standardized or scalable methodology limits the model‘s generalization ability. In addition, as shown in (b), many current methods segment actions into action chunks, losing the information of the latter part of the predicted sequence, and often overlook the inherently multimodal nature of action trajectories—i.e., the fact that there may be multiple plausible ways to achieve a goal.     </p>
+    <p> -->
+  </div>
+  </div>
+  </section>
+
+
+<!-- 模型介绍部分 -->
+<section class="content-section">
+<div class="container">
+<h2 class="section-title">FPC-VLA Model</h2>
+<div class="section-content">
+  <!-- 模型架构图占位符 -->
+  <div style="text-align: center;">
+    <img src="figs/network.jpg" alt="Motivation" style="width: 100%; max-width: 1200px;">
+  </div>
+</div>
+</div>
+</section>
+
+<!-- 视频结果展示部分 -->
+<section class="content-section">
+  <div class="container">
+    <h2 class="section-title">Videos</h2>
+    <!-- <div class="video-desc" style="color:#444; font-size:1.1em; margin-bottom:2em; text-align:left;">
+      本部分展示了多个典型任务的机器人视频结果，每行包含两个任务模块，每个模块下有两个并列视频，便于横向对比不同任务或方案的执行效果。
+    </div> -->
+    <div class="section-content">
+      <div class="robot-section" style="margin-bottom: 2.5em;">
+        <h3 style="margin-bottom:0.1em;">ALOHA <span style="font-size:0.85em; color:#888;">(8x)</span></h3>
+        <!-- <div style="color:#666; font-size:1em; margin-bottom:1.2em;">
+          Examples of the Google robot executing tasks with our model in SIMPLER.
+        </div> -->
+        <!-- 任务模块行（每行两个任务模块） -->
+        <div class="task-row" style="display: flex; gap: 1rem; flex-wrap: nowrap; margin-bottom: 2rem;">
+          <!-- 任务模块1 -->
+          <div class="task-module" style="flex: 0 0 33.33%; min-width: 320px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); padding: 1rem;">
+              <div class="task-title" style="font-weight: 600; text-align: center; margin-bottom: 1rem;">Stack orange block on yellow block</div>
+              <div style="height: 20px;"></div>
+              <div class="task-videos" style="display: flex; gap: 0.5rem; justify-content: center;">
+                  <div class="video-box" style="flex: 2;">
+                      <video controls autoplay loop style="width: 100%; border: none; border-radius: 8px;" >
+                          <source src="figs/aloha2.mp4" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                  </div>
+              </div>
+          </div>
+      
+          <!-- 任务模块2 -->
+          <div class="task-module" style="flex: 0 0 33.33%; min-width: 320px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); padding: 1rem;">
+              <div class="task-title" style="font-weight: 600; text-align: center; margin-bottom: 1rem;">Put yellow block and red cylinder in white plate</div>
+              <div class="task-videos" style="display: flex; gap: 0.5rem; justify-content: center;">
+                  <div class="video-box" style="flex: 2;">
+                      <video controls autoplay loop style="width: 100%; border: none; border-radius: 8px;" >
+                          <source src="figs/aloha3.mp4" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                  </div>
+              </div>
+          </div>
+      
+          <!-- 任务模块3 -->
+          <div class="task-module" style="flex: 0 0 33.33%; min-width: 320px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); padding: 1rem;">
+              <div class="task-title" style="font-weight: 600; text-align: center; margin-bottom: 1rem;">Put cup on the left of table</div>
+              <div style="height: 20px;"></div>
+              <div class="task-videos" style="display: flex; gap: 0.5rem; justify-content: center;">
+                  <div class="video-box" style="flex: 2;">
+                      <video controls autoplay loop style="width: 100%; border: none; border-radius: 8px;" >
+                          <source src="figs/aloha1.mp4" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                  </div>
+              </div>
+          </div>
+      </div>
+      </div>
+      <div class="robot-section" style="margin-bottom: 2.5em;">
+        <h3 style="margin-bottom:0.1em;">Xiaomi Robot <span style="font-size:0.85em; color:#888;">(8x)</span></h3>
+        <!-- <div style="color:#666; font-size:1em; margin-bottom:1.2em;">
+          Examples of the Google robot executing tasks with our model in SIMPLER.
+        </div> -->
+        <!-- 任务模块行（每行两个任务模块） -->
+        <div class="task-row" 
+     style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center;">
+    
+    <!-- 任务模块1 -->
+    <div class="task-module" style="flex: 0 0 33.33%; min-width: 320px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); padding: 1rem;">
+        <div class="task-title" style="font-weight: 600; text-align: center; margin-bottom: 1rem;">
+            Put white ball and green ball in blue plate
+        </div>
+        <div style="height: 20px;"></div>
+        <div class="task-videos" style="display: flex; gap: 0.5rem; justify-content: center;">
+            <div class="video-box" style="flex: 2;">
+                <video controls autoplay loop style="width: 100%; border: none; border-radius: 8px;">
+                    <source src="figs/92u1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务模块2 -->
+    <div class="task-module" style="flex: 0 0 33.33%; min-width: 320px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); padding: 1rem;">
+        <div class="task-title" style="font-weight: 600; text-align: center; margin-bottom: 1rem;">
+            Stack orange block on green block
+        </div>
+        <div style="height: 20px;"></div>
+        <div class="task-videos" style="display: flex; gap: 0.5rem; justify-content: center;">
+            <div class="video-box" style="flex: 2;">
+                <video controls autoplay loop style="width: 100%; border: none; border-radius: 8px;">
+                    <source src="figs/92u2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>  
+    </div>
+      <div class="robot-section" style="margin-bottom: 2.5em;">
+        <h3 style="margin-bottom:0.1em;">Google Robot <span style="font-size:0.85em; color:#888;">(in SIMPLER)</span></h3>
+        <!-- <div style="color:#666; font-size:1em; margin-bottom:1.2em;">
+          Examples of the Google robot executing tasks with our model in SIMPLER.
+        </div> -->
+        <!-- 任务模块行（每行两个任务模块） -->
+        <div class="task-row" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <!-- 任务模块1 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Pick up coke can</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/pick up coke can 1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/pick up coke can 2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+        
+        
+          <!-- 任务模块2 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Move near</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/move near 1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/move near 2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第二行 -->
+        <div class="task-row" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <!-- 任务模块3 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Open/close drawer</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/open clode drawer 1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/open close drawer 2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+          <!-- 任务模块4 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Open top drawer and place apple</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/open top drawer and place apple 1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/open top drawer and place apple 2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>   
+    </div>       
+      <!-- 可继续添加更多行，每行两个任务模块，每个任务模块下两个视频 -->
+      <div class="robot-section" style="margin-bottom: 2.5em;">
+        <h3 style="margin-bottom:0.1em;">WidowX <span style="font-size:0.85em; color:#888;">(in SIMPLER)</span></h3>
+        <!-- <div style="color:#666; font-size:1em; margin-bottom:1.2em;">
+          Examples of the Google robot executing tasks with our model in SIMPLER.
+        </div> -->
+        <!-- 任务模块行（每行两个任务模块） -->
+        <div class="task-row" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <!-- 任务模块1 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Put spoon on towel</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/spoon1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/spoon2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+          <!-- 任务模块2 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Put carrot on plate</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/carrot1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/carrot2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- 第二行 -->
+        <div class="task-row" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <!-- 任务模块3 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Stack green block on yellow block</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/stack1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/stack2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+          <!-- 任务模块4 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Put eggplant on yellow basket</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/eggplant1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/eggplant2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="robot-section" style="margin-bottom: 2.5em;">
+        <h3 style="margin-bottom:0.1em;">Franka <span style="font-size:0.85em; color:#888;">(in LIBERO)</span></h3>
+        <!-- <div style="color:#666; font-size:1em; margin-bottom:1.2em;">
+          Examples of the Google robot executing tasks with our model in SIMPLER.
+        </div> -->
+        <!-- 任务模块行（每行两个任务模块） -->
+        <div class="task-row" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <!-- 任务模块1 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Goal</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/goal1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div style="text-align:center; color:#888; font-size:0.95em;">Put the wine bottle on top_of the cabinet</div>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/goal2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div style="text-align:center; color:#888; font-size:0.95em;">Open the top drawer and put the bowl inside</div>
+                </div>
+            </div>
+        </div>
+          <!-- 任务模块2 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Spatial</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/spatial1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div style="text-align:center; color:#888; font-size:0.95em;">Pick up the black bowl next to the ramekin and place it on the plate</div>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/spatial2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div style="text-align:center; color:#888; font-size:0.95em;">Pick up the black bowl on the wooden cabinet and place it on the plate</div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- 第二行 -->
+        <div class="task-row" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <!-- 任务模块3 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Object</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/object1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div style="text-align:center; color:#888; font-size:0.95em;">Pick up the milk and place it in the basket</div>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/object2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div style="text-align:center; color:#888; font-size:0.95em;">Pick up the orange juice and place it in the basket</div>
+                </div>
+            </div>
+        </div>
+          <!-- 任务模块4 -->
+          <div class="task-module" style="flex:1; min-width:320px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.08); padding:1rem;">
+            <div class="task-title" style="font-weight:600; text-align:center; margin-bottom:1rem;">Long</div>
+            <div class="task-videos" style="display:flex; gap:0.5rem; justify-content:center;"> <!-- 将 gap 从 1rem 调整为 0.5rem，减小空隙 -->
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/long1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div style="text-align:center; color:#888; font-size:0.95em;">Put both the alphabet soup and the tomato sauce in the basket</div>
+                </div>
+                <div class="video-box" style="flex:2;">
+                    <video controls autoplay loop style="width:100%; border:none; border-radius:8px;" playbackRate="2">
+                        <source src="figs/long2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div style="text-align:center; color:#888; font-size:0.95em;">Turn on the stove and put the moka pot on it</div>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 实验结果部分 -->
+<section class="content-section">
+  <div class="container">
+  <h2 class="section-title">Experimental Results</h2>
+  <h3 style="margin-bottom:0.1em;">WidowX <span style="font-size:0.85em; color:#888;">(in SIMPLER)</span></h3>
+  <div class="section-content">
+    <div style="text-align: center;">
+      <img src="figs/widowx.jpg" alt="Motivation" style="width: 100%; max-width: 1200px;">
+    </div>
+  </div>
+  <h3 style="margin-bottom:0.1em;">Google Robot <span style="font-size:0.85em; color:#888;">(in SIMPLER)</span></h3>
+  <div class="section-content">
+    <div style="text-align: center;">
+      <img src="figs/google_robot.jpg" alt="Motivation" style="width: 100%; max-width: 1200px;">
+    </div>
+  </div>
+  <h3 style="margin-bottom:0.1em;">Franka <span style="font-size:0.85em; color:#888;">(in LIBERO)</span></h3>
+  <div class="section-content">
+    <div style="text-align: center;">
+      <img src="figs/franka.jpg" alt="Motivation" style="width: 100%; max-width: 500px;">
+    </div>
+  </div>
+  </div>
+  </section>
+          
